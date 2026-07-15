@@ -128,9 +128,14 @@
       <!-- Debugger block to visually track if the hidden value changes -->
       <div class="hidden-field-indicator">
         <strong>Hidden Field Current Value:</strong> <br />
-        <span id="hidden-field-status" style="color: red; font-weight: bold"
-          >[Empty]</span
-        >
+        if (document.getElementById("ef_tid").value == ""){
+   <span id="hidden-field-status" style="color: red; font-weight: bold"
+          >[Empty]</span>
+        } else {
+            <span id="hidden-field-status" style="color: red; font-weight: bold"
+          >"TID:" transactionId</span>
+        }
+     
       </div>
 
       <div id="payload-preview"></div>
@@ -144,6 +149,8 @@
       document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const transactionId = urlParams.get("_ef_transaction_id");
+
+        console.log('Ef transaction id:'+transactionId)
 
         if (transactionId) {
           document.getElementById("ef_tid").value = transactionId;
