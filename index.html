@@ -87,7 +87,7 @@
         Use this clean template to practice your own tracking scripts.
       </p>
 
-      <form id="leadGenForm">
+      <form id="leadGenForm" method="GET" action="">
         <div class="form-group">
           <label for="fullName">Full Name</label>
           <input
@@ -164,25 +164,48 @@
 
       // ----------------------------------------------
 
-      // FORM SUBMISSION LOADER (Simulates sending data to a CRM)
+// FORM SUBMISSION LOADER (Simulates sending data to a CRM + firing Everflow Postback)
       document
         .getElementById("leadGenForm")
         .addEventListener("submit", function (e) {
-          e.preventDefault(); // Stop page from refreshing
+          e.preventDefault(); // Keep page from refreshing so we can see our work
 
-          // Grab the exact current state of all input values
+          // 1. Grab the captured transaction ID from your hidden input box
+          const capturedTid = document.getElementById("ef_tid").value;
+
+          // 2. Stop early if there is no token to track
+          if (!capturedTid || capturedTid === "") {
+            alert("Cannot fire postback: Transaction ID is empty!");
+            return;
+          }
+
+          // 3. Dynamically construct your official Everflow Postback URL string
+          const postbackUrl = "https://www.serve-eflow-test.com/?nid=5&transaction_id=" + capturedTid + "&adv1=" + document.getElementById("fullName").value + "&email" + document.getElementById("emailAddress").value + "&adv2=" + document.getElementById("phoneNumber").value;
+          
+          console.log("📡 Firing silent postback to Everflow: " + postbackUrl);
+
+          // 4. Ping Everflow in the background (using 'no-cors' mode so the browser doesn't block it)
+          fetch(postbackUrl, { mode: 'no-cors' })
+            .then(() => {
+              console.log("✅ Postback network request dispatched successfully!");
+            })
+            .catch((err) => {
+              console.error("❌ Network error firing postback:", err);
+            });
+
+          // 5. Run your standard local dashboard UI preview
           const leadPayload = {
             fullName: document.getElementById("fullName").value,
             email: document.getElementById("emailAddress").value,
             phone: document.getElementById("phoneNumber").value,
-            tracking_id: document.getElementById("ef_tid").value, // Captures whatever is inside the hidden box
+            tracking_id: capturedTid,
+            everflow_postback_fired: postbackUrl // Added to your preview box for testing!
           };
 
-          // Print payload data to screen
           const displayBox = document.getElementById("payload-preview");
           displayBox.style.display = "block";
           displayBox.innerText =
-            "// Raw JSON Received by Backend Server:\n" +
+            "// Local CRM Payload Saved:\n" +
             JSON.stringify(leadPayload, null, 2);
         });
     </script>
