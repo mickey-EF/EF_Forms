@@ -123,28 +123,14 @@
 
         <!-- Add this hidden field inside your form -->
         <input type="hidden" id="ef_tid" name="ef_transaction_id" value="" />
+
+        <button type="submit">Submit Lead</button>
       </form>
 
       <!-- Debugger block to visually track if the hidden value changes -->
       <div class="hidden-field-indicator">
         <strong>Hidden Field Current Value:</strong> <br />
-        <script>
-          if (document.getElementById("ef_tid").value == "") {
-            <span
-              id="hidden-field-status"
-              style="color: red; font-weight: bold"
-            >
-              [Empty]
-            </span>;
-          } else {
-            <span
-              id="hidden-field-status"
-              style="color: red; font-weight: bold"
-            >
-              "TID:" transactionId
-            </span>;
-          }
-        </script>
+        <span id="hidden-field-status"> </span>
       </div>
 
       <div id="payload-preview"></div>
@@ -164,7 +150,17 @@
         if (transactionId) {
           document.getElementById("ef_tid").value = transactionId;
         }
+
+              if (document.getElementById("ef_tid").value != "") {
+        document
+          .getElementById("hidden-field-status")
+          .innerText="transaction id:" + transactionId;
+      } else {
+        document.getElementById("hidden-field-status").innerText="EMPTY";
+      }
       });
+
+
 
       // ----------------------------------------------
 
