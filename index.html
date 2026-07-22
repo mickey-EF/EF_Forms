@@ -53,18 +53,19 @@
     <script>
       var transactionId = "";
 
-      // 1. On page load, grab the Transaction ID from URL
+      // On page load, grab the Transaction ID from URL
       document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         transactionId = urlParams.get("_ef_transaction_id");
 
+        // Updates the hidden field with the TID extracted from the URL
         if (transactionId) {
           document.getElementById("ef_tid").value = transactionId;
           console.log("Extracted TID from URL. TID: " + transactionId);
         }
       });
 
-      // 2. Handle Form Submission with JavaScript
+      // Handle Form Submission with JavaScript
       const form = document.getElementById("testForm");
 
       form.addEventListener("submit", async function (event) {
