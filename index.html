@@ -3,211 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blank Lead Gen Template</title>
+    <title>EF Form testing</title>
 
-    <style>
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: #f4f7f6;
-        color: #333;
-        padding: 40px;
-      }
-      .container {
-        max-width: 500px;
-        margin: 0 auto;
-        background: white;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
-      h2 {
-        margin-top: 0;
-        color: #111;
-      }
-      .form-group {
-        margin-bottom: 20px;
-      }
-      label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 14px;
-      }
-      input[type="text"],
-      input[type="email"],
-      input[type="tel"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-        font-size: 16px;
-      }
-      button {
-        width: 100%;
-        background: #222;
-        color: white;
-        border: none;
-        padding: 12px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #000;
-      }
-      .hidden-field-indicator {
-        font-size: 12px;
-        color: #666;
-        background: #eee;
-        padding: 10px;
-        border-radius: 4px;
-        margin-top: 10px;
-        font-family: monospace;
-      }
-      #payload-preview {
-        margin-top: 20px;
-        background: #1e1e1e;
-        color: #39ff14;
-        padding: 15px;
-        border-radius: 4px;
-        font-family: monospace;
-        display: none;
-        white-space: pre-wrap;
-        word-break: break-all;
-      }
-    </style>
+    <!-- Loading EF script in head -->
+    <script
+      type="text/javascript"
+      src="https://www.clik2trk.com/scripts/main.js"
+    ></script>
   </head>
   <body>
-    <div class="container">
-      <h2>Lead Form (Tracking Sandbox)</h2>
-      <p style="font-size: 14px; color: #666">
-        Use this clean template to practice your own tracking scripts.
-      </p>
+    <h2>Test Form</h2>
+    <form action="">
+      <label for="firstname"></label>
+      <input
+        type="text"
+        name="firstname"
+        id="firstname"
+        placeholder="First Name"
+      />
+      <label for="lastname"></label>
+      <input
+        type="text"
+        name="lastname"
+        id="lastname"
+        placeholder="Last Name"
+      />
+      <label for="email"></label>
+      <input type="text" name="email" id="email" placeholder="Email" />
+      <label for="phone"></label>
+      <input type="text" name="phone" id="phone" placeholder="Phone" />
 
-      <form id="leadGenForm" method="GET" action="">
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input
-            type="text"
-            id="fullName"
-            name="first_name"
-            placeholder="John Doe"
-            required
-          />
-        </div>
+      <!-- Add this hidden field inside your form -->
+      <input type="hidden" id="ef_tid" name="ef_transaction_id" value="" />
 
-        <div class="form-group">
-          <label for="emailAddress">Email Address</label>
-          <input
-            type="email"
-            id="emailAddress"
-            name="email"
-            placeholder="john@example.com"
-            required
-          />
-        </div>
+      <button type="submit">Submit</button>
+    </form>
 
-        <div class="form-group">
-          <label for="phoneNumber">Phone Number</label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            name="phone"
-            placeholder="(555) 555-5555"
-            required
-          />
-        </div>
-
-        <!-- Add this hidden field inside your form -->
-        <input type="hidden" id="ef_tid" name="ef_transaction_id" value="" />
-
-        <button type="submit">Submit Lead</button>
-      </form>
-
-      <!-- Debugger block to visually track if the hidden value changes -->
-      <div class="hidden-field-indicator">
-        <strong>Hidden Field Current Value:</strong> <br />
-        <span id="hidden-field-status"> </span>
-      </div>
-
-      <div id="payload-preview"></div>
-    </div>
-
-    <script type="text/javascript">
-      // --- YOUR FUTURE CODES / INJECTIONS GO HERE ---
-      // (e.g., parsing URLs, calling SDKs, changing the values below)
-
-      // On page load, grab the Transaction ID from URL
+    <!-- On page load, grab the Transaction ID from URL -->
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const transactionId = urlParams.get("_ef_transaction_id");
 
-        console.log("Ef transaction id:" + transactionId);
-
         if (transactionId) {
           document.getElementById("ef_tid").value = transactionId;
+          console.log("Extracted TID from URL. TID:" + transactionId);
         }
-
-              if (document.getElementById("ef_tid").value != "") {
-        document
-          .getElementById("hidden-field-status")
-          .innerText="transaction id:" + transactionId;
-      } else {
-        document.getElementById("hidden-field-status").innerText="EMPTY";
-      }
       });
-
-
-
-      // ----------------------------------------------
-
-// FORM SUBMISSION LOADER (Simulates sending data to a CRM + firing Everflow Postback)
-      document
-        .getElementById("leadGenForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault(); // Keep page from refreshing so we can see our work
-
-          // 1. Grab the captured transaction ID from your hidden input box
-          const capturedTid = document.getElementById("ef_tid").value;
-
-          // 2. Stop early if there is no token to track
-          if (!capturedTid || capturedTid === "") {
-            alert("Cannot fire postback: Transaction ID is empty!");
-            return;
-          }
-
-          // 3. Dynamically construct your official Everflow Postback URL string
-          const postbackUrl = "https://www.serve-eflow-test.com/?nid=5&transaction_id=" + capturedTid + "&adv1=" + document.getElementById("fullName").value + "&email=" + document.getElementById("emailAddress").value + "&adv2=" + document.getElementById("phoneNumber").value;
-          
-          console.log("📡 Firing silent postback to Everflow: " + postbackUrl);
-
-          // 4. Ping Everflow in the background (using 'no-cors' mode so the browser doesn't block it)
-          fetch(postbackUrl, { mode: 'no-cors' })
-            .then(() => {
-              console.log("✅ Postback network request dispatched successfully!");
-            })
-            .catch((err) => {
-              console.error("❌ Network error firing postback:", err);
-            });
-
-          // 5. Run your standard local dashboard UI preview
-          const leadPayload = {
-            fullName: document.getElementById("fullName").value,
-            email: document.getElementById("emailAddress").value,
-            phone: document.getElementById("phoneNumber").value,
-            tracking_id: capturedTid,
-            everflow_postback_fired: postbackUrl // Added to your preview box for testing!
-          };
-
-          const displayBox = document.getElementById("payload-preview");
-          displayBox.style.display = "block";
-          displayBox.innerText =
-            "// Local CRM Payload Saved:\n" +
-            JSON.stringify(leadPayload, null, 2);
-        });
     </script>
   </body>
 </html>
