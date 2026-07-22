@@ -13,25 +13,36 @@
   </head>
   <body>
     <h2>Test Form</h2>
-    <form action="">
-      <label for="firstname"></label>
-      <input
-        type="text"
-        name="firstname"
-        id="firstname"
-        placeholder="First Name"
-      />
-      <label for="lastname"></label>
-      <input
-        type="text"
-        name="lastname"
-        id="lastname"
-        placeholder="Last Name"
-      />
-      <label for="email"></label>
-      <input type="text" name="email" id="email" placeholder="Email" />
-      <label for="phone"></label>
-      <input type="text" name="phone" id="phone" placeholder="Phone" />
+    <form method="GET" id="testForm">
+      <div>
+        <label for="firstname"></label>
+        <input
+          type="text"
+          name="firstname"
+          id="firstname"
+          placeholder="First Name"
+        />
+      </div>
+
+      <div>
+        <label for="lastname"></label>
+        <input
+          type="text"
+          name="lastname"
+          id="lastname"
+          placeholder="Last Name"
+        />
+      </div>
+
+      <div>
+        <label for="email"></label>
+        <input type="text" name="email" id="email" placeholder="Email" />
+      </div>
+
+      <div>
+        <label for="phone"></label>
+        <input type="text" name="phone" id="phone" placeholder="Phone" />
+      </div>
 
       <!-- Add this hidden field inside your form -->
       <input type="hidden" id="ef_tid" name="ef_transaction_id" value="" />
@@ -39,15 +50,58 @@
       <button type="submit">Submit</button>
     </form>
 
-    <!-- On page load, grab the Transaction ID from URL -->
     <script>
+      var transactionId = "";
+
+      // 1. On page load, grab the Transaction ID from URL
       document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const transactionId = urlParams.get("_ef_transaction_id");
+        transactionId = urlParams.get("_ef_transaction_id");
 
         if (transactionId) {
           document.getElementById("ef_tid").value = transactionId;
-          console.log("Extracted TID from URL. TID:" + transactionId);
+          console.log("Extracted TID from URL. TID: " + transactionId);
+        }
+      });
+
+      // 2. Handle Form Submission with JavaScript
+      const form = document.getElementById("testForm");
+
+      form.addEventListener("submit", async function (event) {
+        var formData = new FormData(form);
+        const firstName = formData.get("firstname");
+        const lastName = formData.get("lastname");
+        const email = formData.get("email");
+        const phone = formData.get("phone");
+        // Prevent the page from refreshing on submit
+        event.preventDefault();
+
+        console.log("Submitting form data:");
+
+        try {
+          // Send form data to your server/API
+          const response = await fetch(
+            "https://www.serve-eflow-test.com/?nid=5&transaction_id=" +
+              transactionId +
+              "&email=" +
+              encodeURIComponent(email) +
+              "&adv1=" +
+              firstName +
+              "&adv2=" +
+              lastName +
+              "&adv3=" +
+              phone,
+            {
+              method: "GET",
+            },
+          );
+
+          if (!response.ok) throw new Error("Network error");
+
+          const result = await response.text();
+          console.log("Submission successful:", result);
+        } catch (error) {
+          console.error("Error submitting form:", error);
         }
       });
     </script>
