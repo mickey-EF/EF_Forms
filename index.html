@@ -180,7 +180,7 @@
           }
 
           // 3. Dynamically construct your official Everflow Postback URL string
-          const postbackUrl = "https://www.serve-eflow-test.com/?nid=5&transaction_id=" + capturedTid + "&adv1=" + document.getElementById("fullName").value + "&email" + document.getElementById("emailAddress").value + "&adv2=" + document.getElementById("phoneNumber").value;
+          const postbackUrl = "https://www.serve-eflow-test.com/?nid=5&transaction_id=" + capturedTid + "&adv1=" + document.getElementById("fullName").value + "&email=" + document.getElementById("emailAddress").value + "&adv2=" + document.getElementById("phoneNumber").value;
           
           console.log("📡 Firing silent postback to Everflow: " + postbackUrl);
 
